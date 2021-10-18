@@ -28,7 +28,7 @@ fi
 test $? -ne 0 && echo "Could not determine changed files" && exit 1
 
 # Check if autoload option
-if [ -f ${INPUT_AUTOLOAD_FILE} ]; then
+if [[ ! -z ${INPUT_AUTOLOAD_FILE} ]]; then
     PHPDOCTOR_OPTIONS="--autoload-file=${INPUT_AUTOLOAD_FILE}" 
     echo "COMMAND OPTIONS"
     echo "${PHPDOCTOR_OPTIONS}"
