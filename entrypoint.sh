@@ -8,9 +8,10 @@ PHPDOCTOR_OPTIONS=""
 
 cp /action/phpdoctor-matcher.json /github/workflow/phpdoctor-matcher.json
 echo "MY CHECKOUT"
+ls -la
 git branch
-git checkout pmAram-patch-1 autoload.php
-ls
+#git checkout pmAram-patch-1 autoload.php
+ls -la
 # check changed files if want to check just changes
 if [ -n "${INPUT_ONLY_CHANGED_FILES}" ] && [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
     echo "Will only check changed files"
