@@ -7,12 +7,7 @@ CHANGED_FILES_FOR_PHPDOCTOR="${INPUT_FILES}"
 PHPDOCTOR_OPTIONS=""
 
 cp /action/phpdoctor-matcher.json /github/workflow/phpdoctor-matcher.json
-echo "this directory"
-pwd
-ls -la
-echo "prev"
-pwd
-ls -la my-conf
+
 # check changed files if want to check just changes
 if [ -n "${INPUT_ONLY_CHANGED_FILES}" ] && [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
     echo "Will only check changed files"
@@ -34,6 +29,8 @@ test $? -ne 0 && echo "Could not determine changed files" && exit 1
 
 # Check if autoload option
 if [[ ! -z ${INPUT_AUTOLOAD_FILE} ]]; then
+    echo "${AUTOLOAD_PATH}"
+    cp ${AUTOLOAD_PATH}/${INPUT_AUTOLOAD_FILE} ./
     PHPDOCTOR_OPTIONS="--autoload-file=${INPUT_AUTOLOAD_FILE}" 
     echo "COMMAND OPTIONS"
     echo "${PHPDOCTOR_OPTIONS}"
