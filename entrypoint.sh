@@ -12,7 +12,7 @@ pwd
 ls -la
 echo "prev"
 pwd
-ls -la ../
+ls -la my-conf
 # check changed files if want to check just changes
 if [ -n "${INPUT_ONLY_CHANGED_FILES}" ] && [ "${INPUT_ONLY_CHANGED_FILES}" = "true" ]; then
     echo "Will only check changed files"
