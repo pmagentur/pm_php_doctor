@@ -10,6 +10,8 @@ cp /action/phpdoctor-matcher.json /github/workflow/phpdoctor-matcher.json
 echo "MY CHECKOUT"
 ls -la
 git branch
+git checkout master
+git branch
 #git checkout pmAram-patch-1 autoload.php
 ls -la
 # check changed files if want to check just changes
