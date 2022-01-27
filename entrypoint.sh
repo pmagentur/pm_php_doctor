@@ -38,10 +38,9 @@ if [ "${USE_CHANGED_FILES}" = "true" ]; then
     ${EXEC} ${PHPDOCTOR_OPTIONS} ${CHANGED_FILES} &> ${OUTPUT_FILE}
     # exit code of phpdoctor
     MD_EXIT_CODE="$?"
+    cat ${OUTPUT_FILE}
     OWNER=${GITHUB_REPOSITORY_OWNER}
     REPO_NAME=${GITHUB_REPOSITORY#*/}
-    which python
-    
     echo "${PARSER} ${OWNER} ${REPO_NAME} ${INPUT_HEAD_SHA_ANNOTATIONS} ${OUTPUT_FILE}"
     ${PARSER} ${OWNER} ${REPO_NAME} ${INPUT_HEAD_SHA_ANNOTATIONS} ${OUTPUT_FILE}
 else
