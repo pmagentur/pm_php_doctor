@@ -40,11 +40,10 @@ def get_all_violations(txt_file: str) -> dict:
             continue
         elif filename_line != None:
             annotation_path = file_path_regex.match(line).group(0).replace(github_prefix,"")
+            annotation_level = "failure" if "errors)" in line else "warning"
         elif error != None:
-            annotation_line = error_line_regex.match(line).group(0).split("[")[1].split("]")[0]
-            annotation_level_value = error_regex.match(line).group(0)
-            annotation_level = "failure" if annotation_level_value == "Error" else "warning"
-            annotation_message = line.replace(annotation_level_value+": "+"["+annotation_line+"]"+":","")
+            annotation_line = error_line_regex.match(line).group(0).split("[")[1].split("]")[0]            
+            annotation_message = line.replace("[" + annotation_line + "]" + ":", "")
             if annotation_path != "": 
                 violation = {"path":annotation_path, "start_line":int(annotation_line),"end_line":int(annotation_line),"annotation_level":annotation_level, "message":annotation_message}
                 if len(violations) < max_number_per_request:
