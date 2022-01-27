@@ -25,9 +25,9 @@ def get_all_violations(txt_file: str) -> dict:
     # init regex
     filename_line_regex = re.compile('^[/:w+].+.php \([0-9]+ errors\)$')
     file_path_regex = re.compile('^[/:w+].+.php')
-    all_error_regex = re.compile('[A-z]+: \[[0-9]+\].*$')
+    all_error_regex = re.compile('\[[0-9]+\].*$')
     error_regex = re.compile('^[A-z]+')
-    error_line_regex = re.compile('^[A-z]+: \[[0-9]+\]:')
+    error_line_regex = re.compile('^\[[0-9]+\]:')
 
     # Opening txt
     error_file = open(txt_file, 'r')
@@ -52,6 +52,7 @@ def get_all_violations(txt_file: str) -> dict:
                 all_violations.append(violations)
                 violations = []
     all_violations.append(violations)
+    print(all_violations)
     return all_violations
 
 def update_pr(owner, repo_name, head_sha, file):
@@ -59,8 +60,8 @@ def update_pr(owner, repo_name, head_sha, file):
     params = {"owner": owner, "repo_name": repo_name, "head_sha": head_sha, "check_name": "Phpdoctor check"}
     head = {"Content-Type'": "application/json"}
     all_violations = get_all_violations(file)
-    for violations in all_violations:
-        response = requests.post(URL, json=violations, params=params, headers=head)
+#    for violations in all_violations:
+#        response = requests.post(URL, json=violations, params=params, headers=head)
         # TODO handle response if error
 
 def main():
