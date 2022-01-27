@@ -45,12 +45,13 @@ def get_all_violations(txt_file: str) -> dict:
             annotation_level_value = error_regex.match(line).group(0)
             annotation_level = "failure" if annotation_level_value == "Error" else "warning"
             annotation_message = line.replace(annotation_level_value+": "+"["+annotation_line+"]"+":","")
-            violation = {"path":annotation_path, "start_line":int(annotation_line),"end_line":int(annotation_line),"annotation_level":annotation_level, "message":annotation_message}
-            if len(violations) < max_number_per_request:
-                violations.append(violation)
-            else:
-                all_violations.append(violations)
-                violations = []
+            if annotation_path != "": 
+                violation = {"path":annotation_path, "start_line":int(annotation_line),"end_line":int(annotation_line),"annotation_level":annotation_level, "message":annotation_message}
+                if len(violations) < max_number_per_request:
+                    violations.append(violation)
+                else:
+                    all_violations.append(violations)
+                    violations = []
     all_violations.append(violations)
     #print(all_violations)
     return all_violations
