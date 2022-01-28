@@ -2,7 +2,6 @@
 import sys
 import requests
 import re
-max_number_per_request = 50 # this is the max number of anotation per requset
 
 # Annotation should have this structure
 # Annotation = {                
@@ -17,11 +16,10 @@ max_number_per_request = 50 # this is the max number of anotation per requset
 #   raw_details?: string; #optional
 # }
 
-
 def get_all_violations(txt_file: str) -> dict:
     github_prefix = "/github/workspace/"
-    violations = [] # for max_number_per_request annotations  
-    all_violations = [] # array of violations
+    violations = []
+
     # init regex
     filename_line_regex = re.compile('^[/:w+].+.php \([0-9]+ errors\)$')
     file_path_regex = re.compile('^[/:w+].+.php')
@@ -36,33 +34,31 @@ def get_all_violations(txt_file: str) -> dict:
     for line in Lines:
         filename_line = filename_line_regex.match(line)
         error = all_error_regex.match(line)
+        # for line that not contains path or error 
         if (filename_line == None) & (error == None):
             continue
+        # for line that contains path and error
         elif filename_line != None:
             annotation_path = file_path_regex.match(line).group(0).replace(github_prefix,"")
             annotation_level = "failure" if "errors)" in line else "warning"
+        # for line that contains error message
         elif error != None:
             annotation_line = error_line_regex.match(line).group(0).split("[")[1].split("]")[0]            
             annotation_message = line.replace("[" + annotation_line + "]" + ":", "")
             if annotation_path != "": 
                 violation = {"path":annotation_path, "start_line":int(annotation_line),"end_line":int(annotation_line),"annotation_level":annotation_level, "message":annotation_message}
-                if len(violations) < max_number_per_request:
-                    violations.append(violation)
-                else:
-                    all_violations.append(violations)
-                    violations = []
-    all_violations.append(violations)
-    #print(all_violations)
-    return all_violations
+                violations.append(violation)
+
+    return violations
 
 def update_pr(owner, repo_name, head_sha, file):
     URL = "https://pm-code-check.pm-projects.de/pm-checks/annotations/create"
     params = {"owner": owner, "repo_name": repo_name, "head_sha": head_sha, "check_name": "Phpdoctor check"}
     head = {"Content-Type'": "application/json"}
     all_violations = get_all_violations(file)
-    for violations in all_violations:
-        response = requests.post(URL, json=violations, params=params, headers=head)
-        # TODO handle response if error
+    response = requests.post(URL, json=all_violations, params=params, headers=head)
+    print(response)
+    # TODO handle response if error
 
 def main():
     owner = sys.argv[1]
