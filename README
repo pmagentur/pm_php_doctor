@@ -1,1 +1,74 @@
-pm-php-doctor
+# PM Phpdoctor Check - GitHub Action
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+
+
+A [GitHub Action](https://github.com/features/actions) to parse violations using [phpdoctor](https://github.com/voku/PHPDoctor/) checker.
+
+## Usage
+
+You can use this action after any other action. Here is an example setup of this action:
+
+1. Create a `.github/workflows/phpdoctor_checker.yml` file in your GitHub repo.
+2. Add the following code to the `phpdoctor_checker.yml` file.
+
+```yml
+name: PHPMD check
+
+on:
+  pull_request_target:
+    types: [opened, edeted]
+  pull_request:
+    types: [synchronize]
+  
+env:
+  AUTOLOAD_BRANCH: "development"
+  AUTOLOAD_FILE_NAME: "autoload.php"
+  AUTOLOAD_PATH: "my_conf"
+jobs:
+  phpdoctor:
+      name: PHPDoctor
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v2
+          with:
+            ref: ${{ github.event.pull_request.head.sha }}
+        - uses: actions/checkout@v2
+          with:
+            ref: ${{ env.AUTOLOAD_BRANCH }}
+            path: ${{ env.AUTOLOAD_PATH }}
+        - name: PHPDoctor check
+          uses: pmagentur/pm_php_doctor@unlimit_pr
+          with:
+            only_changed_files: 'true'
+            autoload_file: ${{ env.AUTOLOAD_FILE_NAME }}
+            head_sha_annotations: ${{github.event.pull_request.head.sha}}
+```
+
+
+## Environment Variables
+
+By default, action is designed to run with minimal configuration but you can alter Slack notification using following environment variables:
+
+Variable       | Default                                               | Purpose
+---------------|-------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------
+AUTOLOAD_BRANCH  | " " | The branch name where keeped autoload file
+AUTOLOAD_FILE_NAME  | " " | Autoload file name
+AUTOLOAD_PATH | " " | Autoload file path
+
+You can see the action block with all variables as below:
+``` yml
+        - name: PHPDoctor check
+          uses: pmagentur/pm_php_doctor@unlimit_pr
+          with:
+            only_changed_files: 'true'
+            autoload_file: ${{ env.AUTOLOAD_FILE_NAME }}
+            head_sha_annotations: ${{github.event.pull_request.head.sha}}
+```
+Input      | Default            |     Required            | Purpose
+---------------|--------------------------|-----------------------------|---------------------------------------------------------------------------------------------------------------------------------------
+files  | " " | false |For checking exact directory or files, used with only_changed_files: "false"
+only_changed_files | " " | false |For checking only changed files from PR
+head_sha_annotations    | " "  | true | head_sha in PR
+## License
+
+[MIT](LICENSE) © 2019 PM Agenture
